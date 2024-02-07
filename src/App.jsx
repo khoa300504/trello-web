@@ -3,11 +3,14 @@ import AccessAlarmIcon from '@mui/icons-material/AccessAlarm'
 import ThreeDRotation from '@mui/icons-material/ThreeDRotation'
 import HomeIcon from '@mui/icons-material/Home'
 import { pink } from '@mui/material/colors'
+import Typography from '@mui/material/Typography'
 
 function App() {
   return (
     <>
       <div>Khoa300504</div>
+
+      <Typography variant='h4' color="text.secondary">Hehe boi</Typography>
       <Button variant="text">Text</Button>
       <Button variant="contained">Contained</Button>
       <Button variant="outlined">Outlined</Button>
