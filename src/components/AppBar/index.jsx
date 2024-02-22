@@ -18,7 +18,7 @@ import Profile from './Menu/Profile'
 
 function AppBar() {
   return (
-    <Box px={2} sx={{
+    <Box sx={{
       backgroundColor: '',
       width: '100%',
       height: (theme) => theme.trello.appBarHeight,
@@ -26,6 +26,7 @@ function AppBar() {
       alignItems: 'center',
       justifyContent: 'space-between',
       gap: 2,
+      paddingX: 2,
       overflowX: 'auto'
     }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -39,18 +40,18 @@ function AppBar() {
           <Recent/>
           <Starred/>
           <Templates/>
-          <Button variant="outlined">Create</Button>
+          <Button variant='outlined'>Create</Button>
         </Box>
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <TextField sx={{ minWidth: '120px' }} id="outlined-search" label="Search..." type="search" size='small'/>
+        <TextField sx={{ minWidth: '120px' }} id='outlined-search' label='Search...' type='search' size='small'/>
         <ModeSelect/>
-        <Tooltip title="Notification">
-          <Badge color="secondary" variant="dot" sx={{ cursor: 'pointer' }}>
+        <Tooltip title='Notification'>
+          <Badge color = 'error' variant='dot' sx={{ cursor: 'pointer' }}>
             <NotificationsIcon sx={{ color: 'primary.main' }}/>
           </Badge>
         </Tooltip>
-        <Tooltip title="Help">
+        <Tooltip title='Help'>
           <HelpOutlineOutlinedIcon sx={{ cursor: 'pointer', color: 'primary.main' }}/>
         </Tooltip>
         <Profile/>

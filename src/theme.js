@@ -1,18 +1,19 @@
-import { BorderAllOutlined } from '@mui/icons-material'
-import { blue, indigo, lightBlue, pink } from '@mui/material/colors'
+import { indigo, lightBlue, red } from '@mui/material/colors'
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
 
 // Create a theme instance.
 const theme = extendTheme({
   trello: {
     appBarHeight: '58px',
-    boardBarHeight: '60px'
+    boardBarHeight: '60px',
+    badgeColor: '#c62828'
   },
   colorSchemes: {
     light: {
       palette: {
         primary: lightBlue,
-        secondary: indigo
+        secondary: indigo,
+        error: red
       }
     },
     dark: {
