@@ -62,6 +62,25 @@ const theme = extendTheme({
           fontSize: '0.875rem'
         })
       }
+    },
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          '*::-webkit-scrollbar' : {
+            height: '8px'
+          },
+          '*::-webkit-scrollbar-track': {
+            background: '#f1f1f1'
+          },
+          '*::-webkit-scrollbar-thumb': {
+            backgroundColor: '#bdbdbd',
+            borderRadius: '8px'
+          },
+          '*::-webkit-scrollbar-thumb:hover': {
+            background: '#9e9e9e'
+          }
+        }
+      }
     }
   }
 })
