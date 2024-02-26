@@ -9,20 +9,6 @@ const theme = extendTheme({
     badgeColor: '#c62828'
   },
   colorSchemes: {
-    light: {
-      palette: {
-        primary: lightBlue,
-        secondary: indigo,
-        error: red
-      }
-    },
-    dark: {
-      palette: {
-        // primary: {
-        //   main: '#000'
-        // }
-      }
-    }
   },
   components: {
     // Name of the component
@@ -37,16 +23,16 @@ const theme = extendTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: ({ theme }) => ({
-          color: theme.palette.primary.main,
+          // color: theme.palette.primary.main,
           fontSize: '0.875rem',
-          '.MuiOutlinedInput-notchedOutline': {
-            borderColor: theme.palette.primary.light
-          },
-          '&:hover': {
-            '.MuiOutlinedInput-notchedOutline': {
-              borderColor: theme.palette.primary.main
-            }
-          },
+          // '.MuiOutlinedInput-notchedOutline': {
+          //   borderColor: theme.palette.primary.light
+          // },
+          // '&:hover': {
+          //   '.MuiOutlinedInput-notchedOutline': {
+          //     borderColor: theme.palette.primary.main
+          //   }
+          // },
           '& fieldset': {
             borderWidth: '1px !important'
           },
@@ -59,7 +45,7 @@ const theme = extendTheme({
     MuiInputLabel: {
       styleOverrides: {
         root: ({ theme }) => ({
-          color: theme.palette.primary.main,
+          // color: theme.palette.primary.main,
           fontSize: '0.875rem'
         })
       }
