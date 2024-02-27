@@ -1,4 +1,3 @@
-import { indigo, lightBlue, red } from '@mui/material/colors'
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
 
 // Create a theme instance.
@@ -16,13 +15,14 @@ const theme = extendTheme({
       styleOverrides: {
         // Name of the slot
         root: {
-          textTransform: 'none'
+          textTransform: 'none',
+          border: '0.5px solid white'
         }
       }
     },
     MuiOutlinedInput: {
       styleOverrides: {
-        root: ({ theme }) => ({
+        root: {
           // color: theme.palette.primary.main,
           fontSize: '0.875rem',
           // '.MuiOutlinedInput-notchedOutline': {
@@ -34,20 +34,23 @@ const theme = extendTheme({
           //   }
           // },
           '& fieldset': {
-            borderWidth: '1px !important'
+            borderWidth: '1.5px !important'
           },
-          '& muiInp': {
-            borderWidth: '1px !important'
+          '&:hover fieldset': {
+            borderWidth: '1.6px !important'
+          },
+          '&.Mui-focused fieldset': {
+            borderWidth: '1.6px !important'
           }
-        })
+        }
       }
     },
     MuiInputLabel: {
       styleOverrides: {
-        root: ({ theme }) => ({
+        root: {
           // color: theme.palette.primary.main,
           fontSize: '0.875rem'
-        })
+        }
       }
     },
     MuiCssBaseline: {
@@ -57,14 +60,14 @@ const theme = extendTheme({
             height: '8px'
           },
           '*::-webkit-scrollbar-track': {
-            background: '#f1f1f1'
+            background: 'transparent'
           },
           '*::-webkit-scrollbar-thumb': {
             backgroundColor: '#bdbdbd',
             borderRadius: '8px'
           },
           '*::-webkit-scrollbar-thumb:hover': {
-            background: '#9e9e9e'
+            background: 'white'
           }
         }
       }

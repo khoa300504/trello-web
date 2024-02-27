@@ -99,7 +99,7 @@ function AppBar() {
         />
         <ModeSelect/>
         <Tooltip title='Notification'>
-          <Badge color = 'secondary' variant='dot' sx={{ cursor: 'pointer' }}>
+          <Badge color = 'warning' variant='dot' sx={{ cursor: 'pointer' }}>
             <NotificationsIcon sx={{ color: 'white' }}/>
           </Badge>
         </Tooltip>
