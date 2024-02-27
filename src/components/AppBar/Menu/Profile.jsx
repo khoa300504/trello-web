@@ -33,7 +33,7 @@ function Profile() {
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
         >
-          <Avatar sx={{ width: 32, height: 32 }} src='https://i.pinimg.com/564x/e8/db/44/e8db4415cef142b7b65273691e6b2081.jpg'/>
+          <Avatar sx={{ width: 36, height: 36 }} src='https://i.pinimg.com/564x/e8/db/44/e8db4415cef142b7b65273691e6b2081.jpg'/>
         </IconButton>
       </Tooltip>
       <Menu
