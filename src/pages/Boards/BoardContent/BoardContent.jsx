@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from './ListColumns/Column/Column'
 import Card from './ListColumns/Column/ListCards/Card/Card'
+import { cloneDeep } from 'lodash'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
@@ -29,15 +30,75 @@ function BoardContent({ board }) {
   const [activeDragItemId, setActiveDragItemId] = useState(null)
   const [activeDragItemType, setActiveDragItemType] = useState(null)
   const [activeDragItemData, setActiveDragItemData] = useState(null)
+
+  const findColumnByCardId = cardId => {
+    return orderedColumns.find(column => column?.cards.map(card => card._id)?.includes(cardId))
+  }
+
   const handleDragStart = event => {
     setActiveDragItemId(event?.active?.id)
     setActiveDragItemType(event?.active?.data?.current?.columnId ? ACTIVE_DRAG_ITEM_TYPE.CARD : ACTIVE_DRAG_ITEM_TYPE.COLUMN)
     setActiveDragItemData(event?.active?.data?.current)
   }
+
+  const handleDragOver = event => {
+    // Nếu là column thì k xử lí
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) return
+
+    // console.log('Drag Over: ', event)
+    const { active, over } = event
+    if (!over || !active) return
+
+    const { id: activeDraggingCardId, data: { current : activeDraggingCardData } } = active
+    const { id: overCardId } = over
+
+    // Tìm 2 columns chứa 2 card active và over
+    const activeColumn = findColumnByCardId(activeDraggingCardId)
+    const overColumn = findColumnByCardId(overCardId)
+
+    if (!activeColumn || !overColumn) return
+
+    // Đoạn code này xử lí kéo card thả ở column khác nếu kéo trong column cũ thì k làm gì và chỉ xử lí khi kéo còn kéo xong xử lí ở dragEnd
+    if (activeColumn._id !== overColumn._id)
+    {
+      // Tìm card id trong overColumn nơi mà card sắp được thả
+      setOrderedColumns(prevColumn => {
+        const overCardIndex = overColumn?.cards?.findIndex(card => card._id === overCardId)
+        let newCardIndex
+        const isBelowOverItem = active.rect.current.translated &&
+        active.rect.current.translated.top > over.rect.top + over.rect.height
+        const modifier = isBelowOverItem ? 1 : 0
+        newCardIndex = overCardIndex >= 0 ? overCardIndex + modifier : overColumn?.cards.length + 1
+        // Tạo mảng orderedColumns mới sau đó xử lí dữ liệu rồi return lại orderedColumns mới
+        const nextColumns = cloneDeep(prevColumn)
+        const nextActiveColumn = nextColumns.find(column => column._id === activeColumn._id)
+        const nextOverColumn = nextColumns.find(column => column._id === overColumn._id)
+        if (nextActiveColumn)
+        {
+          nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== activeDraggingCardId)
+          nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(c => c._id)
+        }
+        if (nextOverColumn)
+        {
+          nextOverColumn.cards = nextOverColumn.cards.filter(card => card._id !== activeDraggingCardId)
+          // uppdate cardOrderIds data
+          nextOverColumn.cards = nextOverColumn.cards.toSpliced(newCardIndex, 0, activeDraggingCardData)
+          nextOverColumn.cardOrderIds = nextOverColumn.cards.map(c => c._id)
+        }
+        return nextColumns
+      })
+    }
+  }
+
   const handleDragEnd = event => {
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD)
+    {
+      // console.log('Hanh dong keo tha card')
+      return
+    }
     // console.log('Drag End: ', event)
     const { active, over } = event
-    if (!over) return
+    if (!over || !active) return
     if (active.id !== over.id)
     {
       const oldIndex = orderedColumns.findIndex(c => c._id === active.id)
@@ -60,8 +121,9 @@ function BoardContent({ board }) {
 
   return (
     <DndContext
-      onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragEnd={handleDragEnd}
       sensors={sensors}>
       <Box sx={{
         bgcolor: ( theme ) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2'),

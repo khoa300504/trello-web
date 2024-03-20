@@ -19,7 +19,8 @@ function Card({ card }) {
     // touchAction: 'none', nào dùng pointerSensor thì on
     transform: CSS.Translate.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : undefined
+    opacity: isDragging ? 0.5 : undefined,
+    border: isDragging ? '1px solid #1abc9c' : undefined
   }
 
   const shouldShowCardActions = () => {
