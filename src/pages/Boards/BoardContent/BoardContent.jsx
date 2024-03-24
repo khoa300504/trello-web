@@ -10,9 +10,9 @@ import { DndContext,
   defaultDropAnimationSideEffects,
   closestCorners,
   pointerWithin,
-  rectIntersection,
-  getFirstCollision,
-  closestCenter
+  // rectIntersection,
+  getFirstCollision
+  // closestCenter
 } from '@dnd-kit/core'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
@@ -172,25 +172,27 @@ function BoardContent({ board }) {
     //Nếu là column thì k cần custome trả về closetConner
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN)
     {
-      return closestCorners(args)
+      return closestCorners({ ...args })
     }
     // Tìm các điểm giao nhau (va chạm) với con trỏ
     const pointerIntersections = pointerWithin(args)
-    const intersections = !!pointerIntersections.length ? pointerIntersections : rectIntersection(args)
-    let overId = getFirstCollision(intersections, 'id')
+    console.log('pointerIntersections', pointerIntersections)
+    if (!pointerIntersections?.length) return
+
+    // const intersections = !!pointerIntersections.length ? pointerIntersections : rectIntersection(args)
+    let overId = getFirstCollision(pointerIntersections, 'id')
     if (overId)
     {
       const checkColumn = orderedColumns.find(c => c._id === overId)
       if (checkColumn)
       {
-        overId = closestCenter({
+        overId = closestCorners({
           ...args,
           droppableContainers: args.droppableContainers.filter(Container => Container.id !== overId && checkColumn?.cardOrderIds?.includes(Container.id))
         })[0]?.id
       }
 
       lastOverId.current = overId
-      console.log('last id: ', lastOverId)
       return [{ id: overId }]
     }
     return lastOverId.current ? [{ id: lastOverId.current }] : []
