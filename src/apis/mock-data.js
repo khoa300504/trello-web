@@ -20,7 +20,7 @@ export const mockData = {
             columnId: 'column-id-01',
             title: 'Title of card 01',
             description: 'Markdown Syntax',
-            cover: 'https://gstatic.gvn360.com/2023/08/Nui_-4-2048x1152.jpg',
+            cover: 'https://media-cdn-v2.laodong.vn/Storage/NewsPortal/2021/9/1/948629/Ronaldomu-1.jpg',
             memberIds: ['test-user-id-01'],
             comments: ['test comment 01', 'test comment 02'],
             attachments: ['test attachment 01', 'test attachment 02', 'test attachment 03']

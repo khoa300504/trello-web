@@ -44,14 +44,14 @@ function BoardBar({ board }) {
           MenuStyle
         }
         icon={<DashboardIcon />}
-        label={board.title}
+        label={board?.title}
         clickable
         />
         <Chip sx={
           MenuStyle
         }
         icon={<VpnLockIcon />}
-        label={capitalizeFirstLetter(board.type)}
+        label={capitalizeFirstLetter(board?.type)}
         clickable
         />
         <Chip sx={
