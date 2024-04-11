@@ -27,7 +27,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard }) {
+function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
   //Nếu dùng pointerSensor thì phải kết hợp touchAction: 'none'
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint: { distance: 10 } })
@@ -163,10 +163,8 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
         const oldColumnIndex = orderedColumns.findIndex(c => c._id === active.id)
         const newColumnIndex = orderedColumns.findIndex(c => c._id === over.id)
         const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
-        // 2 clg này sau này dùng gọi API
-        // const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id )
-        // console.log(dndOrderedColumns)
-        // console.log(dndOrderedColumnsIds)
+        moveColumns(dndOrderedColumns)
+
         setOrderedColumns(dndOrderedColumns)
       }
     }

@@ -7,7 +7,7 @@ import { generatePlaceholderCard } from '~/utils/fomartter'
 import { isEmpty } from 'lodash'
 
 // import { mockData } from '~/apis/mock-data'
-import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI } from '~/apis'
+import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI, updateBoardDetailsAPI } from '~/apis'
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -22,7 +22,6 @@ function Board() {
           column.cardOrderIds = [generatePlaceholderCard(column)._id]
         }
       })
-      console.log(board)
       setBoard(board)
     })
   }, [])
@@ -53,11 +52,23 @@ function Board() {
       setBoard(newBoard)
     }
   }
+
+  const moveColumns = async (dndOrderedColumns) => {
+    //Cập nhật giao diện trước r mới gọi api tránh delay / conflickering
+    const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id )
+    const newBoard = { ...board }
+    newBoard.columns = dndOrderedColumns
+    newBoard.columnOrderIds = dndOrderedColumnsIds
+    setBoard(newBoard)
+
+    updateBoardDetailsAPI(newBoard._id, { columnOrderIds: newBoard.columnOrderIds })
+  }
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
       <AppBar/>
       <BoardBar board={board} />
       <BoardContent
+        moveColumns = {moveColumns}
         createNewColumn = {createNewColumn}
         createNewCard = {createNewCard}
         board={board} />
