@@ -9,19 +9,26 @@ import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 
 
-function ListColumns({ columns }) {
+function ListColumns({ columns, createNewColumn, createNewCard }) {
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => { setOpenNewColumnForm(!openNewColumnForm) }
   const [newColumnTitle, setNewColumnTitle] = useState('')
 
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if (!newColumnTitle)
     {
       toast.error('Please enter column title')
       return
     }
 
+    //Tạo dữ liệu gọi API
+    const newColumnData = {
+      title: newColumnTitle
+
+    }
     //Call api here
+    await createNewColumn(newColumnData)
+
 
     //Đóng trạng thái thêm clear input
     toggleOpenNewColumnForm()
@@ -44,7 +51,9 @@ function ListColumns({ columns }) {
         }
       }}>
         {/* Box Column Test 01*/}
-        {columns?.map( column => <Column key={column._id} column = {column} /> )}
+        {columns?.map( column =>
+          <Column key={column._id} column = {column} createNewCard = {createNewCard} />
+        )}
         {!openNewColumnForm
           ? <Box onClick={ toggleOpenNewColumnForm } sx={{
             minWidth: '250px',
