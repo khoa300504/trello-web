@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
-import { mapOrder } from '~/utils/sorts'
 import { DndContext,
   useSensor,
   useSensors,
@@ -27,7 +26,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
+function BoardContent({ board, createNewColumn, createNewCard, moveColumns, moveCardInTheSameColumn, moveCardToDifferentColumn }) {
   //Nếu dùng pointerSensor thì phải kết hợp touchAction: 'none'
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint: { distance: 10 } })
@@ -50,7 +49,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
     over,
     activeColumn,
     activeDraggingCardId,
-    activeDraggingCardData
+    activeDraggingCardData,
+    triggerFrom
   ) => {
     setOrderedColumns(prevColumn => {
       //Index nơi mà card sắp thả ở OVercolumn
@@ -82,6 +82,10 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
         // Nếu Columns không rỗng thì xóa placeholderCard đi
         nextOverColumn.cards = nextOverColumn.cards.filter(c => !c.FE_PlaceholderCard)
         nextOverColumn.cardOrderIds = nextOverColumn.cards.map(c => c._id)
+      }
+      if ( triggerFrom === 'handleDragEnd')
+      {
+        moveCardToDifferentColumn(activeDraggingCardId, oldColumn._id, nextOverColumn._id, nextColumns)
       }
       return nextColumns
     })
@@ -120,7 +124,15 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
     // Đoạn code này xử lí kéo card thả ở column khác nếu kéo trong column cũ thì k làm gì và chỉ xử lí khi kéo còn kéo xong xử lí ở dragEnd
     if (activeColumn._id !== overColumn._id)
     {
-      moveCardBetweenDifferentColumns(overColumn, overCardId, active, over, activeColumn, activeDraggingCardId, activeDraggingCardData)
+      moveCardBetweenDifferentColumns(
+        overColumn,
+        overCardId,
+        active,
+        over,
+        activeColumn,
+        activeDraggingCardId,
+        activeDraggingCardData,
+        'handleDragOver')
     }
   }
 
@@ -131,28 +143,41 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
     //Xử lí kéo thả Card
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD)
     {
-      if (!over || !active) return
+      const { id: activeDraggingCardId, data: { current: activeDraggingCardData } } = active
       const { id: overCardId } = over
 
       // Tìm 2 columns chứa 2 card active và over
+      const activeColumn = findColumnByCardId(activeDraggingCardId)
       const overColumn = findColumnByCardId(overCardId)
 
-      if (!oldColumn || !overColumn) return
+      if (!activeColumn || !overColumn) return
       if (oldColumn._id !== overColumn._id) {
         // console.log('Hành động kéo thả card trong 2 column khác nhau')
+        moveCardBetweenDifferentColumns(
+          overColumn,
+          overCardId,
+          active,
+          over,
+          activeColumn,
+          activeDraggingCardId,
+          activeDraggingCardData,
+          'handleDragEnd')
       }
       else
+      //kéo thả trong cùng 1 column
       {
         const oldIndex = oldColumn.cards.findIndex(c => c._id === activeDragItemId)
         const newIndex = oldColumn.cards.findIndex(c => c._id === overCardId)
         const dndOrderedCards = arrayMove(oldColumn.cards, oldIndex, newIndex)
+        const dndOrderedCardIds = dndOrderedCards.map(c => c._id)
         setOrderedColumns(prevColumn => {
           const nextColumns = cloneDeep(prevColumn)
           const targerColumn = nextColumns.find(c => c._id === overColumn._id)
           targerColumn.cards = dndOrderedCards
-          targerColumn.cardOrderIds = dndOrderedCards.map(c => c._id)
+          targerColumn.cardOrderIds = dndOrderedCardIds
           return nextColumns
         })
+        moveCardInTheSameColumn(dndOrderedCards, dndOrderedCardIds, oldColumn._id)
       }
     }
     //Xử lí kéo thả Column
@@ -176,7 +201,7 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
   }
 
   useEffect(() => {
-    setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
+    setOrderedColumns(board.columns)
   }, [board] )
 
   const customDropAnimation = { sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: '0.5' } } })
