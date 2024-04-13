@@ -9,6 +9,8 @@ import { mapOrder } from '~/utils/sorts'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
+import { toast } from 'react-toastify'
+
 
 // import { mockData } from '~/apis/mock-data'
 import { fetchBoardDetailsAPI,
@@ -16,7 +18,8 @@ import { fetchBoardDetailsAPI,
   createNewCardAPI,
   updateBoardDetailsAPI,
   updateColumnDetailsAPI,
-  moveCardToDifferentColumnAPI } from '~/apis'
+  moveCardToDifferentColumnAPI,
+  deleteColumnDetailsAPI } from '~/apis'
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -36,7 +39,6 @@ function Board() {
           column.cards = mapOrder(column.cards, column.cardOrderIds, '_id')
         }
       })
-      console.log('New Board: ', board)
       setBoard(board)
     })
   }, [])
@@ -114,6 +116,16 @@ function Board() {
     })
   }
 
+  const deleteColumnDetails = (columnId) => {
+    const newBoard = { ...board }
+    newBoard.columns = newBoard.columns.filter(c => c._id !== columnId)
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter( _id => _id !== columnId)
+    setBoard(newBoard)
+    deleteColumnDetailsAPI(columnId).then(res => {
+      toast.success(res?.deleteResult)
+    })
+  }
+
   if (!board) {
     return (
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, width: '100vv', height: '100vh' }}>
@@ -133,7 +145,8 @@ function Board() {
         createNewCard = {createNewCard}
         moveColumns = {moveColumns}
         moveCardInTheSameColumn = {moveCardInTheSameColumn}
-        moveCardToDifferentColumn = {moveCardToDifferentColumn} />
+        moveCardToDifferentColumn = {moveCardToDifferentColumn}
+        deleteColumnDetails = {deleteColumnDetails} />
     </Container>
   )
 }
