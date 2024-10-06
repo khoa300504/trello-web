@@ -25,7 +25,7 @@ function Board() {
   const [board, setBoard] = useState(null)
 
   useEffect(() => {
-    const boardId = '6613b90a9f007a47bf39097f'
+    const boardId = '6702ad827b9ab626479d0fd9'
     //Call api
     fetchBoardDetailsAPI(boardId).then(board => {
       board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')
