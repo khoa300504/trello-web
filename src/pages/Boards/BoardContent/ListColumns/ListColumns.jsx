@@ -7,14 +7,21 @@ import { useState } from 'react'
 import { toast } from 'react-toastify'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
+import { createNewColumnAPI } from '~/apis'
+import { generatePlaceholderCard } from '~/utils/fomartter'
+import { useSelector, useDispatch } from 'react-redux'
+import { selectCurrentActiveBoard, updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+import { cloneDeep } from 'lodash'
 
 
-function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDetails }) {
+function ListColumns({ columns }) {
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => { setOpenNewColumnForm(!openNewColumnForm) }
   const [newColumnTitle, setNewColumnTitle] = useState('')
+  const board = useSelector(selectCurrentActiveBoard)
+  const dispatch = useDispatch()
 
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if (!newColumnTitle)
     {
       toast.error('Please enter column title')
@@ -26,8 +33,16 @@ function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDeta
       title: newColumnTitle
 
     }
-    //Call api here
-    createNewColumn(newColumnData)
+    const createdColumn = await createNewColumnAPI({
+      ...newColumnData,
+      boardId: board._id
+    })
+    createdColumn.cards = [generatePlaceholderCard(createdColumn)]
+    createdColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id]
+    const newBoard = cloneDeep(board)
+    newBoard.columns.push( createdColumn )
+    newBoard.columnOrderIds.push( createdColumn._id )
+    dispatch(updateCurrentActiveBoard(newBoard))
 
 
     //Đóng trạng thái thêm clear input
@@ -52,7 +67,7 @@ function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDeta
       }}>
         {/* Box Column Test 01*/}
         {columns?.map( column =>
-          <Column key={column._id} column = {column} createNewCard = {createNewCard} deleteColumnDetails = {deleteColumnDetails} />
+          <Column key={column._id} column = {column} />
         )}
         {!openNewColumnForm
           ? <Box onClick={ toggleOpenNewColumnForm } sx={{
