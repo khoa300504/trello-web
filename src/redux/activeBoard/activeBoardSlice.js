@@ -11,7 +11,7 @@ const initialState = {
 }
 
 // Các hành động gọi api (bất đồng bộ) và cập nhật dữ liệu vào Redux, dùng Middleware createAsyncThunk đi kèm với extraReducers
-// https://redux-toolkit.js.org/apt/createAsyncThunk
+// https://redux-toolkit.js.org/rtk-query/usage/migrating-to-rtk-query#implementation-using-createslice--createasyncthunk
 export const fetchBoardDetailsAPI = createAsyncThunk(
   'board/fetchBoardDetailsAPI',
   async (boardId) => {
