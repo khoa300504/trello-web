@@ -189,6 +189,7 @@ function Column({ column }) {
               </MenuItem>
               <Divider />
               <MenuItem
+                className='interceptor-loading'
                 onClick={handleDeleteColumn}
                 sx={{ '&:hover': {
                   color: 'warning.dark',
@@ -255,6 +256,7 @@ function Column({ column }) {
               />
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Button
+                  className='interceptor-loading'
                   variant='contained' color='success' size='small'
                   sx={{
                     boxShadow: 'none',
