@@ -17,14 +17,14 @@ import PageLoadingSpinner from '~/components/Loading/PageLoadingSpinner'
 
 function Board() {
   const dispatch = useDispatch()
-  // const [board, setBoard] = useState(null)
-  const board = useSelector(selectCurrentActiveBoard)
 
   const { boardId } = useParams()
 
   useEffect(() => {
     dispatch(fetchBoardDetailsAPI(boardId))
   }, [dispatch, boardId])
+  // const [board, setBoard] = useState(null)
+  const board = useSelector(selectCurrentActiveBoard)
 
   const moveColumns = (dndOrderedColumns) => {
     //Cập nhật giao diện trước r mới gọi api tránh delay / conflickering

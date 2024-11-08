@@ -19,6 +19,25 @@ export const loginUserAPI = createAsyncThunk(
   }
 )
 
+export const logoutUserAPI = createAsyncThunk(
+  'board/logoutUserAPI',
+  async (showSuccessMessage = true) => {
+    const response = await authorizeAxiosInstance.delete(`${API_ROOT}/v1/users/logout/`)
+    if (showSuccessMessage) {
+      toast.success('Logged out successfully!')
+    }
+    return response.data
+  }
+)
+
+export const updateUserAPI = createAsyncThunk(
+  'board/updateUserAPI',
+  async (data) => {
+    const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/users/update/`, data)
+    return response.data
+  }
+)
+
 //Khoi tao mot slice trong kho luu tru - Redux store
 export const userSlice = createSlice({
   name: 'user',
@@ -29,7 +48,13 @@ export const userSlice = createSlice({
     builder.addCase(loginUserAPI.fulfilled, (state, action) => {
       //Day chinh la response.data trng ham callAPI phia tren
       let user = action.payload
-      state.currentActiveBoard = user
+      state.currentUser = user
+    }),
+    builder.addCase(logoutUserAPI.fulfilled, (state) => {
+      state.currentUser = null
+    }),
+    builder.addCase(updateUserAPI.fulfilled, (state, action) => {
+      state.currentUser = action.payload
     })
   }
 })
