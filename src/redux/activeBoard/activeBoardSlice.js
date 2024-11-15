@@ -35,6 +35,21 @@ export const activeBoardSlice = createSlice({
 
       //Update du lieu currentActiveBoard
       state.currentActiveBoard = board
+    },
+    updateCardInBoard: (state, action) => {
+      //chuan dat ten nhan du lieu vao reducer la action.payload , gan vao bien fullBoard cho co y nghia hon
+      const incommingCard = action.payload
+
+      const column = state.currentActiveBoard.columns.find(c => c._id === incommingCard.columnId)
+
+      if (column) {
+        const card = column.cards.find(c => c._id === incommingCard._id)
+        if (card) {
+          Object.keys(incommingCard).forEach(key => {
+            card[key] = incommingCard[key]
+          })
+        }
+      }
     }
   },
   //Extrareducers: Noi xu li du lieu bat dong bo
@@ -42,6 +57,9 @@ export const activeBoardSlice = createSlice({
     builder.addCase(fetchBoardDetailsAPI.fulfilled, (state, action) => {
       //Day chinh la response.data trng ham callAPI phia tren
       let board = action.payload
+
+      // Thanh vien bao gom owners + members
+      board.FE_allUSERs = board.owners.concat(board.members)
 
       //Xu lieu du lieu neu can thiet
       board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')
@@ -64,7 +82,7 @@ export const activeBoardSlice = createSlice({
 // Action creators are generated for each case reducer function
 // Actions: La nơi dành cho các components bên dưới gọi bằng dispatch() tới nó đe cập nhật lại dữ liệu thông qua reducer (chạy đồng độ)
 // Đe ý ở trên thì không thây properties actions dau cả, bởi vì những cái actions này đơn giản là được thằng redux tạo tự động theo tên của reducer.
-export const { updateCurrentActiveBoard } = activeBoardSlice.actions
+export const { updateCurrentActiveBoard, updateCardInBoard } = activeBoardSlice.actions
 
 // Selectors: Là nơi dành cho các components bên dưới gọi bằng hook usesSelector() đe lay dữ liệu từ trong kho redux store ra su dụng
 

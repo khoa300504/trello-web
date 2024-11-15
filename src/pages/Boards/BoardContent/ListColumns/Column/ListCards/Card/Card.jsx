@@ -9,8 +9,15 @@ import CardMedia from '@mui/material/CardMedia'
 import Button from '@mui/material/Button'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useDispatch } from 'react-redux'
+import { showModalActiveCard, updateCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
 
 function Card({ card }) {
+  const dispatch = useDispatch()
+  const setActiveCard = () => {
+    dispatch(updateCurrentActiveCard(card))
+    dispatch(showModalActiveCard())
+  }
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card._id,
     data: { ...card }
@@ -28,6 +35,7 @@ function Card({ card }) {
   }
   return (
     <MuiCard
+      onClick={setActiveCard}
       ref={setNodeRef} style={dndKitCardStyles} {...attributes} {...listeners}
       sx={{
         cursor: 'pointer',
@@ -46,7 +54,7 @@ function Card({ card }) {
         <Typography>{card?.title}</Typography>
       </CardContent>
       {shouldShowCardActions() &&
-        <CardActions sx={{ pt: 0, px: 0.5 }}>
+        <CardActions sx={{ pt: 0, px: 0.5, display: 'flex', justifyContent: 'space-between' }}>
           {!!card?.memberIds?.length && <Button size='small' startIcon={<GroupIcon/>}>{card?.memberIds.length}</Button> }
           {!!card?.comments?.length && <Button size='small' startIcon={<InsertCommentIcon/>}>{card?.comments.length}</Button> }
           {!!card?.attachments?.length && <Button size='small' startIcon={<AttachmentIcon/>}>{card?.attachments.length}</Button> }

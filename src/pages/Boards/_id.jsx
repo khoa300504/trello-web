@@ -14,6 +14,7 @@ import {
   updateColumnDetailsAPI,
   moveCardToDifferentColumnAPI } from '~/apis'
 import PageLoadingSpinner from '~/components/Loading/PageLoadingSpinner'
+import ActiveCard from '~/components/Modal/ActiveCard/ActiveCard'
 
 function Board() {
   const dispatch = useDispatch()
@@ -42,8 +43,8 @@ function Board() {
     if (columnToUpdate) {
       columnToUpdate.cards = dndOrderedCards
       columnToUpdate.cardOrderIds = dndOrderedCardIds
-      dispatch(updateCurrentActiveBoard(newBoard))
     }
+    dispatch(updateCurrentActiveBoard(newBoard))
     updateColumnDetailsAPI(columnToUpdate._id, { cardOrderIds: dndOrderedCardIds })
   }
 
@@ -72,6 +73,10 @@ function Board() {
 
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
+      {/* Check dong/mo dua tren co ton tai activeCard trong redux thi moi render moi thoi diem chi co 1 modal card dang active */}
+      <ActiveCard/>
+
+      {/* Cac thanh phan con lai board detail */}
       <AppBar/>
       <BoardBar board={board} />
       <BoardContent

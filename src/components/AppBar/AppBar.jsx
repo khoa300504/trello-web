@@ -11,8 +11,6 @@ import Starred from './Menu/Starred'
 import Templates from './Menu/Templates'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import Badge from '@mui/material/Badge'
-import NotificationsIcon from '@mui/icons-material/Notifications'
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined'
 import Tooltip from '@mui/material/Tooltip'
 import Profile from './Menu/Profile'
@@ -20,6 +18,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
 import { Link } from 'react-router-dom'
+import Notifications from './Notifications/Notifications'
 
 function AppBar() {
   const [searchValue, setSearchValue] = useState('')
@@ -37,7 +36,11 @@ function AppBar() {
       bgcolor: ( theme ) => (theme.palette.mode === 'dark' ? '#2c3e50' : '#1565c0')
     }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <AppsIcon sx={{ color: 'white' }}/>
+        <Link to='/boards'>
+          <Tooltip title='Board List'>
+            <AppsIcon sx={{ color: 'white', verticalAlign: 'middle' }} />
+          </Tooltip>
+        </Link>
         <Link to='/'>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
             <SvgIcon fontSize='small' component={trelloLogo} inheritViewBox sx={{ color: 'white' }} />
@@ -103,11 +106,7 @@ function AppBar() {
           }}
         />
         <ModeSelect/>
-        <Tooltip title='Notification'>
-          <Badge color = 'warning' variant='dot' sx={{ cursor: 'pointer' }}>
-            <NotificationsIcon sx={{ color: 'white' }}/>
-          </Badge>
-        </Tooltip>
+        <Notifications/>
         <Tooltip title='Help'>
           <HelpOutlineOutlinedIcon sx={{ cursor: 'pointer', color: 'white' }}/>
         </Tooltip>

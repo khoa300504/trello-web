@@ -5,12 +5,10 @@ import VpnLockIcon from '@mui/icons-material/VpnLock'
 import AddToDriveIcon from '@mui/icons-material/AddToDrive'
 import BoltIcon from '@mui/icons-material/Bolt'
 import FilterListIcon from '@mui/icons-material/FilterList'
-import Avatar from '@mui/material/Avatar'
-import AvatarGroup from '@mui/material/AvatarGroup'
 import Tooltip from '@mui/material/Tooltip'
-import Button from '@mui/material/Button'
-import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { capitalizeFirstLetter } from '~/utils/fomartter'
+import BoardUserGroup from './BoardUserGroup'
+import InviteBoardUser from './InviteBoardUser'
 
 const MenuStyle = {
   bgcolor: 'transparent',
@@ -77,55 +75,8 @@ function BoardBar({ board }) {
         />
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Button
-          variant="outlined"
-          startIcon={<PersonAddIcon/>}
-          sx={{
-            color: 'white',
-            borderColor: 'white',
-            '&:hover': {
-              borderColor: 'white'
-            }
-          }}>
-          Invite
-        </Button>
-        <AvatarGroup
-          max={5}
-          sx={{
-            gap: '10px',
-            '& .MuiAvatar-root': {
-              height: 32,
-              width: 32,
-              fontSize: '16px',
-              border: 'none',
-              color: 'white',
-              cursor: 'pointer',
-              '&:first-of-type': { bgcolor: '#a4b0be' }
-            }
-          }}
-        >
-          <Tooltip title="KhoaNguyenDev">
-            <Avatar alt="KhoaNguyenDev" src="https://i.pinimg.com/736x/5a/ba/a4/5abaa4bdd57ac3dd1bf7a2159323bc88.jpg" />
-          </Tooltip>
-          <Tooltip title="BabyLove">
-            <Avatar alt="BabyLove" src="https://i.pinimg.com/564x/b1/00/da/b100da15d670accd698ee82197f08585.jpg" />
-          </Tooltip>
-          <Tooltip title="Cr7">
-            <Avatar alt="Cr7" src="https://i.pinimg.com/564x/c7/1c/f8/c71cf8c53739beacdcc80b50b9433a50.jpg" />
-          </Tooltip>
-          <Tooltip title="Itachi">
-            <Avatar alt="Itachi" src="https://i.pinimg.com/564x/38/b9/f4/38b9f4e7c9244f83c085e560c5c207e5.jpg" />
-          </Tooltip>
-          <Tooltip title="Cr7">
-            <Avatar alt="Cr7" src="https://i.pinimg.com/564x/a4/bc/07/a4bc074169928a3b36861738fda8f542.jpg" />
-          </Tooltip>
-          <Tooltip title="Xiao">
-            <Avatar alt="Xiao" src="https://i.pinimg.com/564x/09/14/73/0914735f0930eaea1483297626fb85bc.jpg" />
-          </Tooltip>
-          <Tooltip title="Oni">
-            <Avatar alt="Oni" src="https://i.pinimg.com/564x/ad/60/40/ad6040f3a427c68179208c3c4bc18fb2.jpg" />
-          </Tooltip>
-        </AvatarGroup>
+        <InviteBoardUser boardId={board._id}/>
+        <BoardUserGroup boardUsers={board.FE_allUSERs}/>
       </Box>
     </Box>
   )
