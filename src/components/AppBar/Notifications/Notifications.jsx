@@ -14,7 +14,10 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd'
 import DoneIcon from '@mui/icons-material/Done'
 import NotInterestedIcon from '@mui/icons-material/NotInterested'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchInvitationsAPI, selectCurrentNotifications, updateBoardInvitationAPI } from '~/redux/notifications/notificationsSlice'
+import { addNotification, fetchInvitationsAPI, selectCurrentNotifications, updateBoardInvitationAPI } from '~/redux/notifications/notificationsSlice'
+import { socketIoInstance } from '~/socketClient'
+import { selectCurrentUser } from '~/redux/user/userSlice'
+import { useNavigate } from 'react-router-dom'
 
 const BOARD_INVITATION_STATUS = {
   PENDING: 'PENDING',
@@ -24,10 +27,14 @@ const BOARD_INVITATION_STATUS = {
 
 function Notifications() {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [newNotification, setNewNotification] = useState(false)
+  const currentUser = useSelector(selectCurrentUser)
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClickNotificationIcon = (event) => {
     setAnchorEl(event.currentTarget)
+    setNewNotification(false)
   }
   const handleClose = () => {
     setAnchorEl(null)
@@ -36,12 +43,28 @@ function Notifications() {
   const notifications = useSelector(selectCurrentNotifications)
   useEffect(() => {
     dispatch(fetchInvitationsAPI())
-  }, [dispatch])
+
+    //Khi nhan duoc su kien BE_USER_INVITED_TO_BOARD
+    const onReceiveNewInvitation = (invitaion) => {
+      if (invitaion.inviteeId === currentUser._id) {
+        dispatch(addNotification(invitaion))
+        setNewNotification(true)
+      }
+    }
+    socketIoInstance.on('BE_USER_INVITED_TO_BOARD', onReceiveNewInvitation)
+
+    return () => {
+      socketIoInstance.off('BE_USER_INVITED_TO_BOARD'. onReceiveNewInvitation)
+    }
+
+  }, [currentUser._id, dispatch])
 
   const updateBoardInvitation = (status, ivitationId) => {
     dispatch(updateBoardInvitationAPI({ ivitationId, status }))
       .then(res => {
-        console.log(res)
+        if (res.payload.boardInvitation.status === BOARD_INVITATION_STATUS.ACCEPTED) {
+          navigate(`/boards/${res.payload.boardInvitation.boardId}`)
+        }
       })
   }
 
@@ -51,7 +74,7 @@ function Notifications() {
         <Badge
           color="warning"
           // variant="none"
-          variant={notifications === null ? 'standard' : 'dot'}
+          variant={newNotification ? 'dot' : 'standard'}
           sx={{ cursor: 'pointer' }}
           id="basic-button-open-notification"
           aria-controls={open ? 'basic-notification-drop-down' : undefined}
@@ -60,8 +83,7 @@ function Notifications() {
           onClick={handleClickNotificationIcon}
         >
           <NotificationsNoneIcon sx={{
-            // color: 'white'
-            color: 'yellow'
+            color: newNotification ? 'yellow' : 'white'
           }} />
         </Badge>
       </Tooltip>

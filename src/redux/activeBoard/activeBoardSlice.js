@@ -59,7 +59,7 @@ export const activeBoardSlice = createSlice({
       let board = action.payload
 
       // Thanh vien bao gom owners + members
-      board.FE_allUSERs = board.owners.concat(board.members)
+      board.FE_allUsers = board.owners.concat(board.members)
 
       //Xu lieu du lieu neu can thiet
       board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')
